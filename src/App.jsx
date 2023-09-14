@@ -1,7 +1,7 @@
 import Home from "./pages/Home";
 import Nav from "./components/Nav";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Books from "./pages/books";
+import Books from "./pages/Books";
 import { books } from "./data";
 import BookInfo from "./pages/BookInfo";
 import Cart from "./pages/Cart";
@@ -28,16 +28,16 @@ function App() {
   }
 
   function removeItem(item) {
-    setCart(cart.filter(book => book.id !== item.id))
+    setCart(cart.filter((book) => book.id !== item.id));
     console.log("removeItem", item);
   }
 
   function numberOfItems() {
     let counter = 0;
-    cart.forEach(item => {
-      counter += item.quantity
-    })
-    return counter
+    cart.forEach((item) => {
+      counter += item.quantity;
+    });
+    return counter;
   }
 
   useEffect(() => {
