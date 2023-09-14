@@ -1,35 +1,77 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Home from "./pages/Home";
+import Nav from "./components/Nav";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Books from "./pages/books";
+import { books } from "./data";
+import BookInfo from "./pages/BookInfo";
+import Cart from "./pages/Cart";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cart, setCart] = useState([]);
+
+  function addToCart(book) {
+    setCart([...cart, { ...book, quantity: 1 }]);
+  }
+
+  function changeQuantity(book, quantity) {
+    setCart(
+      cart.map((item) =>
+        item.id === book.id
+          ? {
+              ...item,
+              quantity: +quantity,
+            }
+          : item
+      )
+    );
+  }
+
+  function removeItem(item) {
+    setCart(cart.filter(book => book.id !== item.id))
+    console.log("removeItem", item);
+  }
+
+  function numberOfItems() {
+    let counter = 0;
+    cart.forEach(item => {
+      counter += item.quantity
+    })
+    return counter
+  }
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="App">
+        <Nav numberOfItems={numberOfItems()} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/books" element={<Books books={books} />} />
+          <Route
+            path="/books/:id"
+            element={
+              <BookInfo books={books} addToCart={addToCart} cart={cart} />
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <Cart
+                books={books}
+                cart={cart}
+                changeQuantity={changeQuantity}
+                removeItem={removeItem}
+              />
+            }
+          />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
